@@ -167,14 +167,18 @@ extension DrawerPresentationAnimator: UIViewControllerAnimatedTransitioning {
             }
 
             drawerView.setPosition(.open, animated: transitionContext.isAnimated) { finished in
-               transitionContext.completeTransition(finished)
+                DispatchQueue.main.async {
+                    transitionContext.completeTransition(finished)
+                }
            }
         case .dismiss:
             guard let drawerView = transitionContext.view(forKey: .from) as? DrawerView else {
                 return
             }
             drawerView.setPosition(.closed, animated: transitionContext.isAnimated) { finished in
-                transitionContext.completeTransition(finished)
+                DispatchQueue.main.async {
+                    transitionContext.completeTransition(finished)
+                }
             }
         }
     }
