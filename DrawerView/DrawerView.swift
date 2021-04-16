@@ -85,6 +85,10 @@ let kOverlayOpacity: CGFloat = 0.5
     @objc optional func drawerWillEndDragging(_ drawerView: DrawerView)
 }
 
+@objc public protocol DrawerViewPanDelegate {
+    func shouldHandle(pan: UIPanGestureRecognizer) -> Bool
+}
+
 private struct ChildScrollViewInfo {
     var scrollView: UIScrollView
     var scrollWasEnabled: Bool
@@ -258,6 +262,8 @@ private struct ChildScrollViewInfo {
 
     @IBOutlet
     public weak var delegate: DrawerViewDelegate?
+
+    public weak var panDelegate: DrawerViewPanDelegate?
 
     /// The gesture recognizer that will be handling the drawer pan.
     public lazy var panGestureRecognizer: UIPanGestureRecognizer = {
@@ -784,6 +790,10 @@ private struct ChildScrollViewInfo {
             let translation = sender.translation(in: self)
             let velocity = sender.velocity(in: self)
             if velocity.y == 0 {
+                break
+            }
+
+            if let pan = panDelegate, !pan.shouldHandle(pan: sender) {
                 break
             }
 
